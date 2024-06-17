@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+
 from bs4 import BeautifulSoup
 import LeagueDatabase as LD
 import sqlite3
@@ -35,6 +37,15 @@ team_stats = {
     'S9': 'https://gol.gg/teams/list/season-S9/split-ALL/tournament-ALL/'
 }
 
+synergy_stats = {
+    'S14': 'https://gol.gg/premium/synergy/season-S14/split-ALL/tournament-ALL/',
+    'S13': 'https://gol.gg/premium/synergy/season-S13/split-ALL/tournament-ALL/',
+    'S12': 'https://gol.gg/premium/synergy/season-S12/split-ALL/tournament-ALL/',
+    'S11': 'https://gol.gg/premium/synergy/season-S11/split-ALL/tournament-ALL/',
+    'S10': 'https://gol.gg/premium/synergy/season-S10/split-ALL/tournament-ALL/',
+    'S9': 'https://gol.gg/premium/synergy/season-S9/split-ALL/tournament-ALL/'
+}
+
 
 options = Options()
 options.add_argument('--ignore-certificate-errors')
@@ -63,7 +74,8 @@ def login():
     input = driver.find_element(By.XPATH, "/html/body/div/main/div/div[2]/form/div[4]/button").click()
 
 
-
+def set_top():
+    driver.find_element()
 
 def scrape_champions():
     ChampionDatabase = sqlite3.connect('ChampionStats.db')
@@ -240,39 +252,73 @@ def scrape_players():
 
 def scrape_synergy():
     login()
-    driver.get('https://gol.gg/premium/synergy/season-S14/split-Summer/tournament-ALL/')
+    SynergyDatabase = sqlite3.connect("SynergyStats.db")
+    cursor = SynergyDatabase.cursor()
+    data = {
+        "Champion1":"TEXT",
+        "Role1" : "TEXT",
+        "Champion2":"TEXT",
+        "Role2" : "TEXT",
+        "Games" :"TEXT",
+        "Winrate" :"TEXT",
+        "Gold_Diff15" : "TEXT",
+        "CS_Diff15" : "TEXT"
 
-    # Optionally, switch to the iframe if the table is within one
+
+    }
     
-    time.sleep(2)
-    # Wait for the table to be present
-    wait = WebDriverWait(driver, 30)
-    table = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#result_tab table')))
+    is_top = False
+    for seasons in synergy_stats:
+        driver.get(synergy_stats[seasons ]) 
 
-    # Optionally, print the page source for debugging
-    
+        LD.create_table(cursor,seasons,data)
 
-    # Locate the rows of the table
-    rows = table.find_elements(By.XPATH, './/tbody/tr')
+        #set it to top leagues
+        if (not is_top):
+            leagues = driver.find_element(By.XPATH, '/html/body/div/main/div/div/div[1]/div/form/div[3]/div[1]/table/tbody/tr/td[2]/span/div/div[1]/input')
+            leagues.send_keys('IEM', Keys.ENTER)
+            leagues.send_keys('LCK', Keys.ENTER)
+            leagues.send_keys('LCS', Keys.ENTER)
+            leagues.send_keys('LEC', Keys.ENTER)
+            leagues.send_keys('LMS', Keys.ENTER)
+            leagues.send_keys('LPL', Keys.ENTER)
+            leagues.send_keys('MSC', Keys.ENTER)
+            leagues.send_keys('MSI', Keys.ENTER)
+            leagues.send_keys('WORLDS', Keys.ENTER)
 
-    # Extract data from each row
-    for row in rows:
-        # Locate the cells in the row
-        print(row.text)
+            driver.find_element(By.XPATH,'/html/body/div/main/div/div/div[1]/div/form/div[3]/div[1]/table/tbody/tr/td[2]/div[4]/button').click()
+            is_top = True
+            
         
-        cells = row.find_elements(By.XPATH, './/td')
-        row_data = []
 
-        for cell in cells:
-            roles = cell.find_elements(By.TAG_NAME, 'img')
-            row_data.append(cell.text)
-            for role in roles:
-                if (role.get_attribute('alt') is not None and role.get_attribute('alt') != ''):
-                    row_data.append(role.get_attribute('alt'))
+        time.sleep(2)
+        # Wait for the table to be present
+        wait = WebDriverWait(driver, 30)
+        table = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#result_tab table')))
 
-        
-        print(row_data)
+        # Optionally, print the page source for debugging
     
+        # Locate the rows of the table
+        rows = table.find_elements(By.XPATH, './/tbody/tr')
+
+        # Extract data from each row
+        for row in rows:
+            # Locate the cells in the row
+            
+            
+            cells = row.find_elements(By.XPATH, './/td')
+            row_data = []
+
+            for cell in cells:
+                roles = cell.find_elements(By.TAG_NAME, 'img')
+                row_data.append(cell.text)
+                for role in roles:
+                    if (role.get_attribute('alt') is not None and role.get_attribute('alt') != ''):
+                        row_data.append(role.get_attribute('alt'))
+
+            
+            LD.insert_entry(cursor,seasons,row_data)
+            SynergyDatabase.commit()
 
     
 
