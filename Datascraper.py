@@ -74,8 +74,7 @@ def login():
     input = driver.find_element(By.XPATH, "/html/body/div/main/div/div[2]/form/div[4]/button").click()
 
 
-def set_top():
-    driver.find_element()
+
 
 def scrape_champions():
     ChampionDatabase = sqlite3.connect('ChampionStats.db')
@@ -202,7 +201,6 @@ def scrape_players():
 
     data = {
     "PLAYER": "TEXT",
-    "COUNTRY": "TEXT",
     "GAMES": "TEXT",
     "WIN_RATE": "TEXT",
     "KDA": "TEXT",
@@ -219,6 +217,7 @@ def scrape_players():
     "AVG_WCPM": "TEXT",
     "AVG_VWPM": "TEXT",
     "GD_AT_15": "TEXT",
+    "CSD_AT_15":"TEXT",
     "XPD_AT_15": "TEXT",
     "FB": "TEXT",
     "FB_VICTIM": "TEXT",
@@ -226,13 +225,31 @@ def scrape_players():
     "SOLO_KILLS": "TEXT"
 }
 
-
+    is_top = False
+    
 
     PlayerDatabase = sqlite3.connect("PlayerStats.db")
     cursor = PlayerDatabase.cursor()
     
     for season in player_stats:
+        #set it to top leagues
         driver.get(player_stats[season])
+        if (not is_top):
+            leagues = driver.find_element(By.XPATH, '/html/body/div/main/div/div/div[1]/div/form/div[3]/div[2]/table/tbody/tr/td[2]/span/div/div[1]/input')
+            leagues.send_keys('IEM', Keys.ENTER)
+            leagues.send_keys('LCK', Keys.ENTER)
+            leagues.send_keys('LCS', Keys.ENTER)
+            leagues.send_keys('LEC', Keys.ENTER)
+            leagues.send_keys('LMS', Keys.ENTER)
+            leagues.send_keys('LPL', Keys.ENTER)
+            leagues.send_keys('MSC', Keys.ENTER)
+            leagues.send_keys('MSI', Keys.ENTER)
+            leagues.send_keys('WORLDS', Keys.ENTER)
+
+            driver.find_element(By.XPATH,'/html/body/div/main/div/div/div[1]/div/form/div[3]/div[2]/table/tbody/tr/td[2]/div[4]/button').click()
+            is_top = True
+            
+        
         LD.create_table(cursor,season,data)
         rows = driver.find_elements(By.TAG_NAME, 'tr')[5:]
         
@@ -322,7 +339,7 @@ def scrape_synergy():
 
     
 
-scrape_synergy()
+scrape_players()
 time.sleep(5)
 
 
