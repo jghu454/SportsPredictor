@@ -1,1 +1,1 @@
-# BetCalculator
+# SportsPredictor
