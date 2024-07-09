@@ -337,9 +337,82 @@ def scrape_synergy():
             LD.insert_entry(cursor,seasons,row_data)
             SynergyDatabase.commit()
 
+def scrape_picks(link = "https://gol.gg/game/stats/59552/page-summary/"):
+    
+    driver.get(link)
+    #opens website
+    time.sleep(2)
+    team_names = driver.find_elements(By.XPATH, "//div[contains(@class, 'row pb-3')]")
+    team_names = [x.text for x in team_names]
+    rows = driver.find_elements(By.XPATH, "//div[contains(@class, 'row pb-1')]")
+    
+    array_of_games = {}
+    game_number = 1
+    for i in rows:
+        cols2 = i.find_elements(By.XPATH, ".//div[contains(@class, 'col-4 col-sm-5')]")
+        
+        array_of_games[game_number] = []
+        for id in range(0, len(cols2)):
+            i2 = cols2[id]
+            champions = i2.find_elements(By.TAG_NAME, 'a')
+            all_picks = []
+
+
+
+
+            ##################################
+            for champs in champions:
+                picks= champs.find_element(By.TAG_NAME, 'img').get_attribute('src').split('/')
+                #print(picks)
+                x = [b for b in champs.find_element(By.TAG_NAME, 'img').get_attribute('src').split('/')[-1:]]
+                ###############
+                for v in range(0,len(x)):
+                    x[v] = x[v].replace('.png', '')
+                ###############
+                all_picks.append(x[0])
+            ####################################
+
+
+
+            all_picks = all_picks[-5:]
+            array_of_games[game_number].append(all_picks) 
+            #print(all_picks)
+        
+        game_number = game_number + 1
+    return array_of_games
+
+
+def scrape_teams(link = "https://gol.gg/game/stats/59552/page-summary/"): 
+    driver.get(link)
+    time.sleep(2)
+    teams = [[],[]]
+
+    #give time
     
 
-scrape_players()
+    teams_player = driver.find_elements(By.XPATH, "//div[contains(@class, 'col-12 col-sm-6 pb-4')]")
+    temp = []
+    for i in teams_player:
+        players = i.find_elements(By.TAG_NAME, 'a')
+        
+        for player in players:
+            temp.append(player.text)
+        
+        
+
+    teams[0] = temp[:-5]
+    teams[1] = temp[-5:]
+            
+    return teams 
+            
+                
+
+
+
+
+
+print(scrape_teams())
+print(scrape_picks())
 time.sleep(5)
 
 
