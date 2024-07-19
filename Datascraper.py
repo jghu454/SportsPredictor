@@ -21,7 +21,7 @@ player_stats = {
 }
 
 champion_winrates = {
-
+    'S14':'https://gol.gg/champion/list/season-S14/split-ALL/tournament-ALL/',
     'S13':'https://gol.gg/champion/list/season-S13/split-ALL/tournament-ALL/',
     'S12':'https://gol.gg/champion/list/season-S12/split-ALL/tournament-ALL/',
     'S11':'https://gol.gg/champion/list/season-S11/split-ALL/tournament-ALL/',
@@ -117,11 +117,11 @@ def scrape_champions():
             for y in range(1,17):
                 if (x == 1 and (y == 1 or y == 2)):
                     string = driver.find_elements(By.CSS_SELECTOR, f"tbody tr:nth-child({x}) td:nth-child({y})")[5].text
-                    myArray.append(string)
+                    myArray.append(string.replace(" ", ""))
                     continue
 
 
-                myArray.append(driver.find_element(By.CSS_SELECTOR, f"tbody tr:nth-child({x}) td:nth-child({y})").text)
+                myArray.append(driver.find_element(By.CSS_SELECTOR, f"tbody tr:nth-child({x}) td:nth-child({y})").text.replace(" ", ""))
 
             LD.insert_entry(cursor,season,myArray)
         ChampionDatabase.commit()
@@ -317,7 +317,7 @@ def scrape_synergy():
     
         # Locate the rows of the table
         rows = table.find_elements(By.XPATH, './/tbody/tr')
-
+        print(len(rows))
         # Extract data from each row
         for row in rows:
             # Locate the cells in the row
@@ -347,17 +347,26 @@ def scrape_picks(link = "https://gol.gg/game/stats/59552/page-summary/"):
     rows = driver.find_elements(By.XPATH, "//div[contains(@class, 'row pb-1')]")
     
     array_of_games = {}
+    game_results = {}
     game_number = 1
+
+    #finding champions
     for i in rows:
         cols2 = i.find_elements(By.XPATH, ".//div[contains(@class, 'col-4 col-sm-5')]")
         
         array_of_games[game_number] = []
+        game_results[game_number] = []
+
+
         for id in range(0, len(cols2)):
             i2 = cols2[id]
             champions = i2.find_elements(By.TAG_NAME, 'a')
             all_picks = []
 
 
+            #getting result of games
+            #print(cols2[id].find_element(By.TAG_NAME, 'h1').text)
+            game_results[game_number].append(cols2[id].find_element(By.TAG_NAME, 'h1').text)
 
 
             ##################################
@@ -379,10 +388,11 @@ def scrape_picks(link = "https://gol.gg/game/stats/59552/page-summary/"):
             #print(all_picks)
         
         game_number = game_number + 1
-    return array_of_games
+    return array_of_games, game_results
 
 
-def scrape_teams(link = "https://gol.gg/game/stats/59552/page-summary/"): 
+def scrape_teams_game(link = "https://gol.gg/game/stats/59552/page-summary/"): 
+    print("RUNNNNN")
     driver.get(link)
     time.sleep(2)
     teams = [[],[]]
@@ -411,8 +421,10 @@ def scrape_teams(link = "https://gol.gg/game/stats/59552/page-summary/"):
 
 
 
-print(scrape_teams())
-print(scrape_picks())
+#print(scrape_teams())
+#print(scrape_picks())
+#scrape_synergy()
+#scrape_champions()
 time.sleep(5)
 
 

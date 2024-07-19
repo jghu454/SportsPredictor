@@ -15,6 +15,7 @@ setup = {
 }
 """
 
+
 def create_table(cursor, table_name, setup):
 
     format = ""
@@ -66,4 +67,12 @@ def insert_entry(cursor, table_name, entry):
         cursor.execute(f'''INSERT INTO {table_name} ({column_names}) VALUES ({entry_tostring})''')
     
     
+def retrieve_champ(cursor,table_name, champion):
+    cursor.execute(f'SELECT * FROM {table_name} WHERE CHAMPION = "{champion}"')
 
+    return cursor.fetchall()
+
+def retrieve_player(cursor, table_name, player):
+    cursor.execute(f'SELECT * FROM {table_name} WHERE PLAYER = "{player}"')
+
+    return cursor.fetchall()
