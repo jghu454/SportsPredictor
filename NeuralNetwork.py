@@ -11,10 +11,11 @@ import torchvision.transforms as transforms # Transformations we can perform on 
 class proplay_prediction(nn.Module):
 
 
-    def __init__(self, input_size, output_size = 1):
+    def __init__(self, input_size, output_size = 2):
+        super(proplay_prediction,self).__init__()
         self.layer1 = nn.Linear(input_size,15)
         self.layer2  = nn.Linear(15, 10)
-        self.layer3 = nn.Linear(15,5)
+        self.layer3 = nn.Linear(10,5)
         self.layer4 = nn.Linear(5,output_size)
 
     def forward(self, input): #forward propogation

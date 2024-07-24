@@ -2,7 +2,9 @@ import csv
 import LeagueDatabase as ld
 import sqlite3 
 import Datascraper as dsc
-print("very start")
+from LeagueDataset import LeagueDataset
+from torch.utils.data import DataLoader
+
 
 # Example usage:
 label = [
@@ -158,16 +160,10 @@ label = [
     "Support2_Vision_Per_Min",
     "Support2_Champ_Presence",
     "Support2_Champ_Winrate",
-    
+    "WinningTeam" #will either be 0 or 1 for team 1 or 0
 
 ]
-
-
-
-
 #csvconverter(label, games, 'output.csv')
-
-
 player_format = {
     'top' : [1,2,3,4,5,6,7,8,9,10,11,16,17,18],
     'jg' : [1,2,3,4,5,6,7,8,9,10,11],
@@ -185,8 +181,8 @@ lane_format = {
     4 : 'sup'
 
 }
-print("B4")
-def csvconverter(players, games,results, filename, season):
+
+def csvconverter(players, games,results, file, season):
     #games will be a dictionary of champions
     connection = sqlite3.connect('PlayerStats.db')
     cursor = connection.cursor()
@@ -211,7 +207,12 @@ def csvconverter(players, games,results, filename, season):
         for index in player_format[role]:
             
             if (player_stats_tuple[0][index] != '-'):
-                team1_player_stats_base[role].append(player_stats_tuple[0][index]) 
+                print(player_stats_tuple[0][index], ":", '%' not in player_stats_tuple[0][index], ";", player_stats_tuple[0][index][:-1])
+                if '%' not in player_stats_tuple[0][index]:
+                    team1_player_stats_base[role].append(player_stats_tuple[0][index]) 
+                else:
+                    team1_player_stats_base[role].append(player_stats_tuple[0][index][:-1])
+            
             else:
                 team1_player_stats_base[role].append(0)
 
@@ -241,7 +242,11 @@ def csvconverter(players, games,results, filename, season):
         for index in player_format[role]:
 
             if (player_stats_tuple[0][index] != '-'):
-                team2_player_stats_base[role].append(player_stats_tuple[0][index]) 
+                if '%' not in player_stats_tuple[0][index]:
+                    team2_player_stats_base[role].append(player_stats_tuple[0][index]) 
+                else:
+                    team2_player_stats_base[role].append(player_stats_tuple[0][index][:-1])
+            
             else:
                 team2_player_stats_base[role].append(0) 
 
@@ -255,53 +260,97 @@ def csvconverter(players, games,results, filename, season):
 
     
 
-    with open(filename, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(label)
-        for i in games:
-            picks = games[i] #this gets the array of champion picks
-            team1_picks = picks[0]
-            team2_picks = picks[1]
-
-
-            print(team1_picks)
-            print(team2_picks)
-
-            entire_line = []
-            id = 0
-            for champs in team1_picks:
-                x = ld.retrieve_champ(cursor,season,champs)
-                role = lane_format[id] #this gets role
-
-
-                
-                entire_line = entire_line + team1_player_stats_base[role] #adds laner stats + champion stats
-                entire_line.append(x[0][3])
-                entire_line.append(x[0][6])
-
-                
-                id += 1
-                #3 and 6 are presence and WR
-
-            id = 0
-            for champs in team2_picks:
-                x = ld.retrieve_champ(cursor,season,champs)
-                role = lane_format[id] #this gets role
-
-                
     
-                entire_line = entire_line + team2_player_stats_base[role]
-                entire_line.append(x[0][3])
-                entire_line.append(x[0][6])
-
-                
-                id += 1
-                #3 and 6 are presence and WR
-            writer.writerow(entire_line)
+    writer = csv.writer(file)
+    result_id = 1
+    for i in games:
+        picks = games[i] #this gets the array of champion picks
+        team1_picks = picks[0]
+        team2_picks = picks[1]
 
 
+        print(team1_picks)
+        print(team2_picks)
 
-plrs = dsc.scrape_teams_game()
+        entire_line = []
+        id = 0
+        for champs in team1_picks:
+            x = ld.retrieve_champ(cursor,season,champs)
+            role = lane_format[id] #this gets role
 
-gmes,res = dsc.scrape_picks()
-csvconverter(plrs,gmes,res,'random.csv','S14')
+
+            
+            entire_line = entire_line + team1_player_stats_base[role] #adds laner stats + champion stats
+
+            #print('%' in x[0][3], ":", x[0][3], ":", x[0][3][:-1])
+            #print('%' in x[0][6], ":", x[0][6], ":", x[0][6][:-1])
+
+            entire_line.append(x[0][3][:-1])
+            entire_line.append(x[0][6][:-1])
+
+            
+            id += 1
+            #3 and 6 are presence and WR
+
+        id = 0
+        for champs in team2_picks:
+            x = ld.retrieve_champ(cursor,season,champs)
+            role = lane_format[id] #this gets role
+
+            
+
+            entire_line = entire_line + team2_player_stats_base[role]
+            #print('%' in x[0][3], ":", x[0][3], ":", x[0][3][:-1])
+            #print('%' in x[0][6], ":", x[0][6], ":", x[0][6][:-1])
+
+            entire_line.append(x[0][3][:-1])
+            entire_line.append(x[0][6][:-1])
+
+            
+            id += 1
+            #3 and 6 are presence and WR
+        
+        
+        entire_line = entire_line + [int(results[result_id][1] == "WIN")]
+        result_id += 1
+        writer.writerow(entire_line)
+        print(len(entire_line))
+
+
+dictionary_games = {
+    'S14' : [],
+    'S13' : [],
+    'S12' : [],
+    'S11' : [],
+    'S10' : []
+
+
+
+}
+
+
+dictionary_games['S14'] = dictionary_games["S14"] + dsc.scrape_links_games()
+dictionary_games['S13'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Summer%202023/')
+dictionary_games['S12'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Summer%202022/')
+dictionary_games['S11'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Spring%202024/')
+
+with open('Summer24_LPL_Placements.csv', mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(label)
+
+    for season in dictionary_games:
+        for games in dictionary_games[season]:
+            plrs = dsc.scrape_teams_game(games)
+
+            gmes,res = dsc.scrape_picks(games)
+            csvconverter(plrs,gmes,res,file,season)
+
+
+    """for games in LPL_SUMMER_links:
+        plrs = dsc.scrape_teams_game(games)
+
+        gmes,res = dsc.scrape_picks(games)
+        csvconverter(plrs,gmes,res,file,'S14')
+"""
+
+    

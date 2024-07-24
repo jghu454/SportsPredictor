@@ -388,7 +388,7 @@ def scrape_picks(link = "https://gol.gg/game/stats/59552/page-summary/"):
             #print(all_picks)
         
         game_number = game_number + 1
-    return array_of_games, game_results
+    return dict(list(array_of_games.items())[:1]), dict(list(game_results.items())[:1])
 
 
 def scrape_teams_game(link = "https://gol.gg/game/stats/59552/page-summary/"): 
@@ -416,15 +416,24 @@ def scrape_teams_game(link = "https://gol.gg/game/stats/59552/page-summary/"):
     return teams 
             
                 
+def scrape_links_games(tournament_link = 'https://gol.gg/tournament/tournament-matchlist/LPL%20Summer%20Placements%202024/'):
+    driver.get(tournament_link)
+    time.sleep(2)
+    links = []
+    rows = driver.find_elements(By.TAG_NAME, 'tr')
+    print(len(rows))
+    for i in rows[1:]:
+        links.append(i.find_element(By.TAG_NAME,  'a').get_attribute("href"))
 
-
-
+    print(links)
+    return links
 
 
 #print(scrape_teams())
 #print(scrape_picks())
 #scrape_synergy()
 #scrape_champions()
+#scrape_links_games()
 time.sleep(5)
 
 
