@@ -5,170 +5,19 @@ import Datascraper as dsc
 from LeagueDataset import LeagueDataset
 from torch.utils.data import DataLoader
 
+#create sqlite cursors
+connection = sqlite3.connect('ChampionStats.db')
+connection2 = sqlite3.connect('PlayerStats.db')
 
-# Example usage:
-label = [
-    # Team 1 Stats
-    "Top1_Games",
-    "Top1_Winrate",
-    "Top1_KDA",
-    "Top1_AVG Kills",
-    "Top1_AVG Deaths",
-    "Top1_AVG Assists",
-    "Top1_CSM",
-    "Top1_GPM",
-    "Top1_KP",
-    "Top1_DMG%",
-    "Top1_DPM",
-    "Top1_GOLD_DIFF_15",
-    "Top1_CS_DIFF_15",
-    "Top1_XP_DIFF_15",
-    "Top1_Champ_Presence",
-    "Top1_Champ_Winrate",
-    
-    "Jg1_Games",
-    "Jg1_Winrate",
-    "Jg1_KDA",
-    "Jg1_AVG Kills",
-    "Jg1_AVG Deaths",
-    "Jg1_AVG Assists",
-    "Jg1_CSM",
-    "Jg1_GPM",
-    "Jg1_KP",
-    "Jg1_DMG%",
-    "Jg1_DPM",
-    "Jg1_Champ_Presence",
-    "Jg1_Champ_Winrate",
-    
-    "Mid1_Games",
-    "Mid1_Winrate",
-    "Mid1_KDA",
-    "Mid1_AVG Kills",
-    "Mid1_AVG Deaths",
-    "Mid1_AVG Assists",
-    "Mid1_CSM",
-    "Mid1_GPM",
-    "Mid1_KP",
-    "Mid1_DMG%",
-    "Mid1_DPM",
-    "Mid1_GOLD_DIFF_15",
-    "Mid1_CS_DIFF_15",
-    "Mid1_XP_DIFF_15",
-    "Mid1_Champ_Presence",
-    "Mid1_Champ_Winrate",
-    
-    "Adc1_Games",
-    "Adc1_Winrate",
-    "Adc1_KDA",
-    "Adc1_AVG Kills",
-    "Adc1_AVG Deaths",
-    "Adc1_AVG Assists",
-    "Adc1_CSM",
-    "Adc1_GPM",
-    "Adc1_KP",
-    "Adc1_DMG%",
-    "Adc1_DPM",
-    "Adc1_GOLD_DIFF_15",
-    "Adc1_CS_DIFF_15",
-    "Adc1_XP_DIFF_15",
-    "Adc1_Champ_Presence",
-    "Adc1_Champ_Winrate",
-    
-    "Support1_Games",
-    "Support1_Winrate",
-    "Support1_KDA",
-    "Support1_AVG Kills",
-    "Support1_AVG Deaths",
-    "Support1_AVG Assists",
-    "Support1_Vision_Per_Min",
-    "Support1_Champ_Presence",
-    "Support1_Champ_Winrate",
-    
-    
-    # Team 2 Stats
-    "Top2_Games",
-    "Top2_Winrate",
-    "Top2_KDA",
-    "Top2_AVG Kills",
-    "Top2_AVG Deaths",
-    "Top2_AVG Assists",
-    "Top2_CSM",
-    "Top2_GPM",
-    "Top2_KP",
-    "Top2_DMG%",
-    "Top2_DPM",
-    "Top2_GOLD_DIFF_15",
-    "Top2_CS_DIFF_15",
-    "Top2_XP_DIFF_15",
-    "Top2_Champ_Presence",
-    "Top2_Champ_Winrate",
-    
-    "Jg2_Games",
-    "Jg2_Winrate",
-    "Jg2_KDA",
-    "Jg2_AVG Kills",
-    "Jg2_AVG Deaths",
-    "Jg2_AVG Assists",
-    "Jg2_CSM",
-    "Jg2_GPM",
-    "Jg2_KP",
-    "Jg2_DMG%",
-    "Jg2_DPM",
-    "Jg2_Champ_Presence",
-    "Jg2_Champ_Winrate",
-    
-    "Mid2_Games",
-    "Mid2_Winrate",
-    "Mid2_KDA",
-    "Mid2_AVG Kills",
-    "Mid2_AVG Deaths",
-    "Mid2_AVG Assists",
-    "Mid2_CSM",
-    "Mid2_GPM",
-    "Mid2_KP",
-    "Mid2_DMG%",
-    "Mid2_DPM",
-    "Mid2_GOLD_DIFF_15",
-    "Mid2_CS_DIFF_15",
-    "Mid2_XP_DIFF_15",
-    "Mid2_Champ_Presence",
-    "Mid2_Champ_Winrate",
-    
-    "Adc2_Games",
-    "Adc2_Winrate",
-    "Adc2_KDA",
-    "Adc2_AVG Kills",
-    "Adc2_AVG Deaths",
-    "Adc2_AVG Assists",
-    "Adc2_CSM",
-    "Adc2_GPM",
-    "Adc2_KP",
-    "Adc2_DMG%",
-    "Adc2_DPM",
-    "Adc2_GOLD_DIFF_15",
-    "Adc2_CS_DIFF_15",
-    "Adc2_XP_DIFF_15",
-    "Adc2_Champ_Presence",
-    "Adc2_Champ_Winrate",
-    
-    "Support2_Games",
-    "Support2_Winrate",
-    "Support2_KDA",
-    "Support2_AVG Kills",
-    "Support2_AVG Deaths",
-    "Support2_AVG Assists",
-    "Support2_Vision_Per_Min",
-    "Support2_Champ_Presence",
-    "Support2_Champ_Winrate",
-    "WinningTeam" #will either be 0 or 1 for team 1 or 0
 
-]
-#csvconverter(label, games, 'output.csv')
+champ_cursor = connection.cursor()
+player_cursor = connection2.cursor()
+
 player_format = {
-    'top' : [1,2,3,4,5,6,7,8,9,10,11,16,17,18],
-    'jg' : [1,2,3,4,5,6,7,8,9,10,11],
-    'mid' : [1,2,3,4,5,6,7,8,9,10,11,16,17,18],
-    'adc' : [1,2,3,4,5,6,7,8,9,10,11,16,17,18],
+    'top' : [1,2,3,4,5,6,7,8,9,10,11,16], #16-18 is 0 for lpl
+    'jg' :  [1,2,3,4,5,6,7,8,9,10,11,16],
+    'mid' : [1,2,3,4,5,6,7,8,9,10,11,16],
+    'adc' : [1,2,3,4,5,6,7,8,9,10,11,16],
     'sup' : [1,2,3,4,5,6,12]
 
 }
@@ -181,140 +30,201 @@ lane_format = {
     4 : 'sup'
 
 }
-
-def csvconverter(players, games,results, file, season):
-    #games will be a dictionary of champions
-    connection = sqlite3.connect('PlayerStats.db')
-    cursor = connection.cursor()
-    team1_player_stats_base = {
-        'top' : [],
-        'jg' : [],
-        'mid' : [],
-        'adc' : [],
-        'sup' : []
-    } #just use to hold all the stats of every single player first
-    team1 = players[0] #name of all players in team1
-    id = 0
-    #get values for team
-    for i in team1_player_stats_base:
-        #get role 
-        role = lane_format[id] #top jg mid adc or sup depends on index
-
-        #now using said role , we will get the player's stats in a tuple
-        player_stats_tuple = ld.retrieve_player(cursor, season, team1[id])
-        
-        #player_format[role] tells us all indices where the important information is for said role
-        for index in player_format[role]:
-            
-            if (player_stats_tuple[0][index] != '-'):
-                print(player_stats_tuple[0][index], ":", '%' not in player_stats_tuple[0][index], ";", player_stats_tuple[0][index][:-1])
-                if '%' not in player_stats_tuple[0][index]:
-                    team1_player_stats_base[role].append(player_stats_tuple[0][index]) 
-                else:
-                    team1_player_stats_base[role].append(player_stats_tuple[0][index][:-1])
-            
-            else:
-                team1_player_stats_base[role].append(0)
-
-
-        id += 1 #index to the next player after getting all data
-
-
-
-    team2_player_stats_base = {
-        'top' : [],
-        'jg' : [],
-        'mid' : [],
-        'adc' : [],
-        'sup' : []
-    }
-    team2 = players[1]
-    id = 0
-    #get values for team
-    for i in team2_player_stats_base:
-        #get role 
-        role = lane_format[id] #top jg mid adc or sup depends on index
-
-        #now using said role , we will get the player's stats in a tuple
-        player_stats_tuple = ld.retrieve_player(cursor, season, team2[id])
-        
-        #player_format[role] tells us all indices where the important information is for said role
-        for index in player_format[role]:
-
-            if (player_stats_tuple[0][index] != '-'):
-                if '%' not in player_stats_tuple[0][index]:
-                    team2_player_stats_base[role].append(player_stats_tuple[0][index]) 
-                else:
-                    team2_player_stats_base[role].append(player_stats_tuple[0][index][:-1])
-            
-            else:
-                team2_player_stats_base[role].append(0) 
-
-
-        id += 1 #index to the next player after getting all data
+labels = [
+    # Top
+    'Top_Games_Difference', 'Top_Winrate_Difference', 'Top_KDA_Difference', 'Top_AVG_Kills_Difference',
+    'Top_AVG_Deaths_Difference', 'Top_AVG_Assists_Difference', 'Top_CSM_Difference', 'Top_GPM_Difference',
+    'Top_KP_Difference', 'Top_DMG%_Difference', 'Top_DPM_Difference', 'Top_GOLD_DIFF_15_Difference',
 
     
-    connection = sqlite3.connect('ChampionStats.db')
-    cursor = connection.cursor()
+    # Jg
+    'Jg_Games_Difference', 'Jg_Winrate_Difference', 'Jg_KDA_Difference', 'Jg_AVG_Kills_Difference',
+    'Jg_AVG_Deaths_Difference', 'Jg_AVG_Assists_Difference', 'Jg_CSM_Difference', 'Jg_GPM_Difference',
+    'Jg_KP_Difference', 'Jg_DMG%_Difference', 'Jg_DPM_Difference', 'Jg_GOLD_DIFF_15_Difference',
     
+    # Mid
+    'Mid_Games_Difference', 'Mid_Winrate_Difference', 'Mid_KDA_Difference', 'Mid_AVG_Kills_Difference',
+    'Mid_AVG_Deaths_Difference', 'Mid_AVG_Assists_Difference', 'Mid_CSM_Difference', 'Mid_GPM_Difference',
+    'Mid_KP_Difference', 'Mid_DMG%_Difference', 'Mid_DPM_Difference', 'Mid_GOLD_DIFF_15_Difference',
+    
+    
+    # Adc
+    'Adc_Games_Difference', 'Adc_Winrate_Difference', 'Adc_KDA_Difference', 'Adc_AVG_Kills_Difference',
+    'Adc_AVG_Deaths_Difference', 'Adc_AVG_Assists_Difference', 'Adc_CSM_Difference', 'Adc_GPM_Difference',
+    'Adc_KP_Difference', 'Adc_DMG%_Difference', 'Adc_DPM_Difference', 'Adc_GOLD_DIFF_15_Difference',
+    
+    
+    # Support
+    'Support_Games_Difference', 'Support_Winrate_Difference', 'Support_KDA_Difference', 'Support_AVG_Kills_Difference',
+    'Support_AVG_Deaths_Difference', 'Support_AVG_Assists_Difference', 'Support_Vision_Per_Min_Difference',
+]
 
-    
+champion_stat_labels = [
+    # Top
+    'Top_Champ_KDA_Difference', 'Top_Champ_CS_Per_Min_Difference', 'Top_Champ_Damage_Per_Min_Difference', 
+    'Top_Champ_Gold_Per_Min_Difference', 'Top_Champ_CS_Diff_At_15_Difference', 'Top_Champ_XP_Diff_At_15_Difference',
+    'Top_Champ_Gold_Diff_At_15_Difference', 'TopComfortabilityDifference',
 
-    
+    # Jg
+    'Jg_Champ_KDA_Difference', 'Jg_Champ_CS_Per_Min_Difference', 'Jg_Champ_Damage_Per_Min_Difference', 
+    'Jg_Champ_Gold_Per_Min_Difference', 'Jg_Champ_CS_Diff_At_15_Difference', 'Jg_Champ_XP_Diff_At_15_Difference',
+    'Jg_Champ_Gold_Diff_At_15_Difference', 'JgComfortabilityDifference',
+
+    # Mid
+    'Mid_Champ_KDA_Difference', 'Mid_Champ_CS_Per_Min_Difference', 'Mid_Champ_Damage_Per_Min_Difference', 
+    'Mid_Champ_Gold_Per_Min_Difference', 'Mid_Champ_CS_Diff_At_15_Difference', 'Mid_Champ_XP_Diff_At_15_Difference',
+    'Mid_Champ_Gold_Diff_At_15_Difference', 'MidComfortabilityDifference',
+
+    # Adc
+    'Adc_Champ_KDA_Difference', 'Adc_Champ_CS_Per_Min_Difference', 'Adc_Champ_Damage_Per_Min_Difference', 
+    'Adc_Champ_Gold_Per_Min_Difference', 'Adc_Champ_CS_Diff_At_15_Difference', 'Adc_Champ_XP_Diff_At_15_Difference',
+    'Adc_Champ_Gold_Diff_At_15_Difference', 'AdcComfortabilityDifference',
+
+    # Support
+    'Support_Champ_KDA_Difference', 'Support_Champ_CS_Per_Min_Difference', 'Support_Champ_Damage_Per_Min_Difference', 
+    'Support_Champ_Gold_Per_Min_Difference', 'Support_Champ_CS_Diff_At_15_Difference', 'Support_Champ_XP_Diff_At_15_Difference',
+    'Support_Champ_Gold_Diff_At_15_Difference','SupportComfortabilityDiffernce',
+
+    "GAME_RESULT"
+]
+
+
+
+
+def calculate_comfortability(stats, avg_stats, min_games=1):
+    """
+    Calculate the comfortability score based on player stats and champion's average stats.
+
+    Parameters:
+    stats (dict): Player's stats with keys 'Games', 'Winrate', 'KDA', 'CS/MIN', 'GOLD/MIN'.
+    avg_stats (dict): Champion's average stats with keys 'AVG_Winrate', 'AVG_KDA', 'AVG_CS/MIN', 'AVG_GOLD/MIN'.
+    min_games (int): Minimum number of games to adjust the comfortability score.
+
+    Returns:
+    float: Comfortability score.
+    """
+
+    if len(stats) == 0:
+        return 0
+
+    # Extract player's stats
+    games = stats["Games"]
+    winrate = stats["Winrate"]
+    kda = stats["KDA"]
+    cs_min = stats["CS/MIN"]
+    gold_min = stats["GOLD/MIN"]
+
+    # Extract champion's average stats
+    avg_winrate = avg_stats["AVG_Winrate"]
+    avg_kda = avg_stats["AVG_KDA"]
+    avg_cs_min = avg_stats["AVG_CS/MIN"]
+    avg_gold_min = avg_stats["AVG_GOLD/MIN"]
+
+    # Calculate raw comfortability score
+    raw_score = (
+        (cs_min - avg_cs_min) +
+        (gold_min - avg_gold_min) +
+        (kda - avg_kda)
+    )
+
+    # Calculate the game factor
+    game_factor = games / (games + min_games)
+
+    # Adjust the comfortability score
+    comfortability_score = raw_score * game_factor
+
+    return comfortability_score
+
+def csvconverter(players, champs ,result, file, season,istop):
     writer = csv.writer(file)
-    result_id = 1
-    for i in games:
-        picks = games[i] #this gets the array of champion picks
-        team1_picks = picks[0]
-        team2_picks = picks[1]
+    
+    entry = []
+    team1 = players[0]
+    team2 = players[1]
 
-
-        print(team1_picks)
-        print(team2_picks)
-
-        entire_line = []
-        id = 0
-        for champs in team1_picks:
-            x = ld.retrieve_champ(cursor,season,champs)
-            role = lane_format[id] #this gets role
-
-
-            
-            entire_line = entire_line + team1_player_stats_base[role] #adds laner stats + champion stats
-
-            #print('%' in x[0][3], ":", x[0][3], ":", x[0][3][:-1])
-            #print('%' in x[0][6], ":", x[0][6], ":", x[0][6][:-1])
-
-            entire_line.append(x[0][3][:-1])
-            entire_line.append(x[0][6][:-1])
-
-            
-            id += 1
-            #3 and 6 are presence and WR
-
-        id = 0
-        for champs in team2_picks:
-            x = ld.retrieve_champ(cursor,season,champs)
-            role = lane_format[id] #this gets role
-
-            
-
-            entire_line = entire_line + team2_player_stats_base[role]
-            #print('%' in x[0][3], ":", x[0][3], ":", x[0][3][:-1])
-            #print('%' in x[0][6], ":", x[0][6], ":", x[0][6][:-1])
-
-            entire_line.append(x[0][3][:-1])
-            entire_line.append(x[0][6][:-1])
-
-            
-            id += 1
-            #3 and 6 are presence and WR
+    for i in range(0,len(team1)):
+        #i is the position the player plays which correlates to a value in lane_format above
         
+        lane = lane_format[i]
+        for player_format_values in player_format[lane]: #this gets the player values in player_format according to their lane
+            team1_player_stat = ld.retrieve_player(cursor=player_cursor,table_name=season,player=team1[i])[0][player_format_values]
+            team2_player_stat = ld.retrieve_player(cursor=player_cursor,table_name=season,player=team2[i])[0][player_format_values]
+
+            if '%' in team1_player_stat:
+                team1_player_stat = team1_player_stat[:-1]
+                team2_player_stat = team2_player_stat[:-1]
+
+
+            if '-' == team1_player_stat: ##this is mainly because lpl does not track cs per min for god knows why and we may remove this stat later
+                team1_player_stat = 0
+                team2_player_stat = 0
+
+            team1_player_stat = float(team1_player_stat)
+            team2_player_stat = float(team2_player_stat)
+
+            difference = team1_player_stat - team2_player_stat
+            entry.append(difference)#appending each player stat from the format
+            
+            #print("Team1 Player is: ", team1[i], "|| Team2 Player is: ", team2[i], "|| Their stats are =", team1_player_stat, ":", team2_player_stat, "and the difference = ", difference)
+
+
+    #deal with champs now stat wise
+    print("AFTER PLAYERS: ", id)
+    team1_champs = champs[0]
+    team2_champs = champs[1]
+
+    for i in range(0,len(team1_champs)):
+        team1_champ_stat = ld.retrieve_champ(champ_cursor,season,team1_champs[i])[0]
+        team2_champ_stat = ld.retrieve_champ(champ_cursor,season,team2_champs[i])[0]
+        #The important stats are kda, csPerMin,damagePerMin,goldPerMin,CsDiffAt15,xpDiffat15,GoldDiffAt15
+        #these are indices 7,10,11,12,13,14,15
+
+        entry.append(float(team1_champ_stat[7]) - float(team2_champ_stat[7]))
+        entry.append(float(team1_champ_stat[10]) - float(team2_champ_stat[10]))
+        entry.append(float(team1_champ_stat[11]) - float(team2_champ_stat[11]))
+        entry.append(float(team1_champ_stat[12]) - float(team2_champ_stat[12]))
+        entry.append(float(team1_champ_stat[13]) - float(team2_champ_stat[13]))
+        entry.append(float(team1_champ_stat[14]) - float(team2_champ_stat[14]))
+        entry.append(float(team1_champ_stat[15]) - float(team2_champ_stat[15]))
         
-        entire_line = entire_line + [int(results[result_id][1] == "WIN")]
-        result_id += 1
-        writer.writerow(entire_line)
-        print(len(entire_line))
+
+        champ_AVG1 = {
+            'AVG_Winrate' : float(team1_champ_stat[6][:-1]),
+            'AVG_KDA' : float(team1_champ_stat[7][:-1]),
+            'AVG_CS/MIN' : float(team1_champ_stat[10][:-1]),
+            'AVG_GOLD/MIN' : float(team1_champ_stat[12][:-1])
+        }
+
+        champ_AVG2 = {
+            'AVG_Winrate' : float(team2_champ_stat[6][:-1]),
+            'AVG_KDA' : float(team2_champ_stat[7][:-1]),
+            'AVG_CS/MIN' : float(team2_champ_stat[10][:-1]),
+            'AVG_GOLD/MIN' : float(team2_champ_stat[12][:-1])
+        }
+
+        print(team1[i] , ":", team2[i])
+        print(team1_champs[i], ":", team2_champs[i])
+        player_comfort_scrape1 = dsc.scrape_champ_comfort(team1[i],season,team1_champs[i],istop)
+        player_comfort_scrape2 = dsc.scrape_champ_comfort(team2[i],season,team2_champs[i],istop)
+
+        
+
+        player1_comfort = calculate_comfortability(player_comfort_scrape1,champ_AVG1)
+        player2_comfort = calculate_comfortability(player_comfort_scrape2,champ_AVG2)
+        
+        player_comfort_difference = player1_comfort - player2_comfort
+
+        entry.append(player_comfort_difference)
+        
+    
+    entry.append(int(result[1] == "WIN"))
+    writer.writerow(entry)
+
+
+
+
+
+
 
 
 dictionary_games = {
@@ -322,35 +232,31 @@ dictionary_games = {
     'S13' : [],
     'S12' : [],
     'S11' : [],
-    'S10' : []
-
-
-
 }
 
 
-dictionary_games['S14'] = dictionary_games["S14"] + dsc.scrape_links_games()
-dictionary_games['S13'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Summer%202023/')
+#dictionary_games['S14'] = dictionary_games["S14"] + dsc.scrape_links_games()
+#dictionary_games['S13'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Summer%202023/')
 dictionary_games['S12'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Summer%202022/')
 dictionary_games['S11'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Spring%202024/')
 
+
+
+
+
+
 with open('Summer24_LPL_Placements.csv', mode='w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(label)
-
+    writer.writerow(labels + champion_stat_labels)
+    istop = [False]
+    
     for season in dictionary_games:
         for games in dictionary_games[season]:
-            plrs = dsc.scrape_teams_game(games)
+            players = dsc.scrape_teams_game(games)
+            champs,game_result = dsc.scrape_picks(games)
+            print(game_result[1])
+            if (len(players[0]) > 5 or len(players[1]) > 5):
+                continue
 
-            gmes,res = dsc.scrape_picks(games)
-            csvconverter(plrs,gmes,res,file,season)
+            csvconverter(players,champs[1],game_result[1],file,season,istop)
 
-
-    """for games in LPL_SUMMER_links:
-        plrs = dsc.scrape_teams_game(games)
-
-        gmes,res = dsc.scrape_picks(games)
-        csvconverter(plrs,gmes,res,file,'S14')
-"""
-
-    

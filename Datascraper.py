@@ -341,7 +341,7 @@ def scrape_picks(link = "https://gol.gg/game/stats/59552/page-summary/"):
     
     driver.get(link)
     #opens website
-    time.sleep(2)
+    time.sleep(0.5)
     team_names = driver.find_elements(By.XPATH, "//div[contains(@class, 'row pb-3')]")
     team_names = [x.text for x in team_names]
     rows = driver.find_elements(By.XPATH, "//div[contains(@class, 'row pb-1')]")
@@ -389,12 +389,62 @@ def scrape_picks(link = "https://gol.gg/game/stats/59552/page-summary/"):
         
         game_number = game_number + 1
     return dict(list(array_of_games.items())[:1]), dict(list(game_results.items())[:1])
+def scrape_picks2(link = "https://gol.gg/game/stats/59552/page-summary/"):
+    
+    driver.get(link)
+    #opens website
+    time.sleep(0.5)
+    team_names = driver.find_elements(By.XPATH, "//div[contains(@class, 'row pb-3')]")
+    team_names = [x.text for x in team_names]
+    rows = driver.find_elements(By.XPATH, "//div[contains(@class, 'row pb-1')]")
+    
+    array_of_games = {}
+    game_results = {}
+    game_number = 1
 
+    #finding champions
+    for i in rows:
+        cols2 = i.find_elements(By.XPATH, ".//div[contains(@class, 'col-4 col-sm-5')]")
+        
+        array_of_games[game_number] = []
+        game_results[game_number] = []
+
+
+        for id in range(0, len(cols2)):
+            i2 = cols2[id]
+            champions = i2.find_elements(By.TAG_NAME, 'a')
+            all_picks = []
+
+
+            #getting result of games
+            #print(cols2[id].find_element(By.TAG_NAME, 'h1').text)
+            game_results[game_number].append(cols2[id].find_element(By.TAG_NAME, 'h1').text)
+
+
+            ##################################
+            for champs in champions:
+                picks= champs.find_element(By.TAG_NAME, 'img').get_attribute('src').split('/')
+                #print(picks)
+                x = [b for b in champs.find_element(By.TAG_NAME, 'img').get_attribute('src').split('/')[-1:]]
+                ###############
+                for v in range(0,len(x)):
+                    x[v] = x[v].replace('.png', '')
+                ###############
+                all_picks.append(x[0])
+            ####################################
+
+
+
+            all_picks = all_picks[-5:]
+            array_of_games[game_number].append(all_picks) 
+            #print(all_picks)
+        
+        game_number = game_number + 1
+    return dict(list(array_of_games.items())), dict(list(game_results.items()))
 
 def scrape_teams_game(link = "https://gol.gg/game/stats/59552/page-summary/"): 
-    print("RUNNNNN")
     driver.get(link)
-    time.sleep(2)
+    time.sleep(0.5)
     teams = [[],[]]
 
     #give time
@@ -418,23 +468,90 @@ def scrape_teams_game(link = "https://gol.gg/game/stats/59552/page-summary/"):
                 
 def scrape_links_games(tournament_link = 'https://gol.gg/tournament/tournament-matchlist/LPL%20Summer%20Placements%202024/'):
     driver.get(tournament_link)
-    time.sleep(2)
+    time.sleep(0.5)
     links = []
     rows = driver.find_elements(By.TAG_NAME, 'tr')
-    print(len(rows))
+    
     for i in rows[1:]:
         links.append(i.find_element(By.TAG_NAME,  'a').get_attribute("href"))
 
-    print(links)
+    
     return links
 
+def scrape_champ_comfort(player,season,champ, istop):
+    
+    driver.get(f'https://gol.gg/players/list/season-{season}/split-Summer/tournament-ALL/')
+    time.sleep(0.5)
+
+    
+    if istop[0] == False:
+        istop[0] = True
+        leagues = driver.find_element(By.XPATH, '/html/body/div/main/div/div/div[1]/div/form/div[3]/div[2]/table/tbody/tr/td[2]/span/div/div[1]/input')
+        leagues.send_keys('IEM', Keys.ENTER)
+        leagues.send_keys('LCK', Keys.ENTER)
+        leagues.send_keys('LCS', Keys.ENTER)
+        leagues.send_keys('LEC', Keys.ENTER)
+        leagues.send_keys('LMS', Keys.ENTER)
+        leagues.send_keys('LPL', Keys.ENTER)
+        leagues.send_keys('MSC', Keys.ENTER)
+        leagues.send_keys('MSI', Keys.ENTER)
+        leagues.send_keys('WORLDS', Keys.ENTER)
+        #print("BUTTON:",driver.find_element(By.XPATH,'/html/body/div/main/div/div/div[1]/div/form/div[3]/div[2]/table/tbody/tr/td[2]/div[4]/button').text)
+        driver.find_element(By.XPATH,'/html/body/div/main/div/div/div[1]/div/form/div[3]/div[2]/table/tbody/tr/td[2]/div[4]/button').click()
+    
+
+
+
+    player = driver.find_element(By.XPATH,f'//*[@title = "{player} stats"]')
+    player.click()
+    #opened the player's profile now time to type in the champion to look up their stats
+    time.sleep(0.5)
+    all_link = driver.find_elements(By.XPATH,'//*[@class = "mr-2"]')[0]
+    driver.get(all_link.find_element(By.TAG_NAME,'a').get_attribute("href"))
+    time.sleep(0.1)
+    champ_search = driver.find_element(By.XPATH,'//*[@id="champion"]')
+    
+    #we want to first see if the player has ever played the champion at all, if not we return an empty array
+    look_for_champ = [x.text for x in champ_search.find_elements(By.TAG_NAME, 'option')[1:]]
+
+    if champ not in look_for_champ:
+        return []
+
+    champ_search.send_keys(champ + Keys.RETURN)
+    stats = {}
+
+    time.sleep(0.5)
+    #make sure its all splits
+    driver.find_element(By.XPATH,'//*[@class = "region_filter"]').find_elements(By.TAG_NAME,'td')[1].find_element(By.TAG_NAME,'a').click()
+    #grabbing total games
+    games = driver.find_element(By.XPATH,'/html/body/div/main/div[2]/div/div[3]/div/div/div[2]/table[1]/tbody/tr/td[2]').text
+    #win-rate
+    wr = driver.find_element(By.XPATH,'/html/body/div/main/div[2]/div/div[3]/div/div/div[2]/table[1]/tbody/tr/td[3]/div/div[3]').text
+    #KDA
+    kd = driver.find_element(By.XPATH,'/html/body/div/main/div[2]/div/div[3]/div/div/div[1]/table[1]/tbody/tr[3]/td[2]').text
+    #CS/MIN
+    cs_min = driver.find_element(By.XPATH,'/html/body/div/main/div[2]/div/div[3]/div/div/div[1]/table[1]/tbody/tr[4]/td[2]').text
+    #Gold/MIN
+    gold_min = driver.find_element(By.XPATH,'/html/body/div/main/div[2]/div/div[3]/div/div/div[1]/table[1]/tbody/tr[5]/td[2]').text
+
+    if games == '-' or wr == '-' or kd == '-' or cs_min == '-' or gold_min == '-':
+        return []
+
+    #now we append
+    stats["Games"] = float(games)
+    stats["Winrate"] = float(wr[:-1])
+    stats["KDA"] = float(kd)
+    stats["CS/MIN"] = float(cs_min)
+    stats["GOLD/MIN"] = float(gold_min)
+
+    return stats
 
 #print(scrape_teams())
 #print(scrape_picks())
 #scrape_synergy()
 #scrape_champions()
 #scrape_links_games()
-time.sleep(5)
+#time.sleep(5)
 
 
 

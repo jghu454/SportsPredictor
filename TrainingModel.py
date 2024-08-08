@@ -13,12 +13,12 @@ from torch.optim.lr_scheduler import StepLR
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-input_size = 140
+input_size = 95
 num_classes = 2
-learning_rate = 0.001
+learning_rate = 0.0005
 num_epochs = 5000
 
-data_loader = DataLoader(LeagueDataset('Summer24_LPL_Placements.csv'), batch_size=150, shuffle=True)
+data_loader = DataLoader(LeagueDataset('PlayerComfortabilityIncluded.csv'), batch_size=150, shuffle=True)
 
 model = network(input_size).to(device)
 
