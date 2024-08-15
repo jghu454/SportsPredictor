@@ -1,0 +1,50 @@
+['FakeGod', 'Bugi', 'Insanity', 'Bvoy', 'Zeyzal'] :(CORRECT): ['Sniper', 'River', 'Quid', 'Tomo', 'Eyla']
+1 : 1
+['Dhokla', 'Contractz', 'Palafox', 'FBI', 'Huhi'] :(CORRECT): ['Impact', 'UmTi', 'APA', 'Yeon', 'CoreJJ']
+2 : 2
+['Dhokla', 'Contractz', 'Palafox', 'FBI', 'Huhi'] :(INCORRECT): ['Impact', 'UmTi', 'APA', 'Yeon', 'CoreJJ']
+2 : 3
+['Impact', 'UmTi', 'APA', 'Yeon', 'CoreJJ'] :(INCORRECT): ['Thanatos', 'Blaber', 'jojopyun', 'Berserker', 'Vulcan']
+2 : 4
+['Impact', 'UmTi', 'APA', 'Yeon', 'CoreJJ'] :(INCORRECT): ['Thanatos', 'Blaber', 'jojopyun', 'Berserker', 'Vulcan']
+2 : 5
+['Impact', 'UmTi', 'APA', 'Yeon', 'CoreJJ'] :(INCORRECT): ['Thanatos', 'Blaber', 'jojopyun', 'Berserker', 'Vulcan']
+2 : 6
+['Bwipo', 'Inspired', 'Quad', 'Massu', 'Busio'] :(CORRECT): ['FakeGod', 'Bugi', 'Insanity', 'Bvoy', 'Zeyzal']
+3 : 7
+['Bwipo', 'Inspired', 'Quad', 'Massu', 'Busio'] :(INCORRECT): ['FakeGod', 'Bugi', 'Insanity', 'Bvoy', 'Zeyzal']
+3 : 8
+['Bwipo', 'Inspired', 'Quad', 'Massu', 'Busio'] :(CORRECT): ['FakeGod', 'Bugi', 'Insanity', 'Bvoy', 'Zeyzal']
+4 : 9
+['Dhokla', 'Contractz', 'Palafox', 'FBI', 'Huhi'] :(INCORRECT): ['Licorice', 'Spica', 'Jensen', 'Zven', 'Isles']
+4 : 10
+['Dhokla', 'Contractz', 'Palafox', 'FBI', 'Huhi'] :(CORRECT): ['Licorice', 'Spica', 'Jensen', 'Zven', 'Isles']
+5 : 11
+['Sniper', 'River', 'Quid', 'Tomo', 'Eyla'] :(INCORRECT): ['Castle', 'Armao', 'Mask', 'Tactical', 'Olleh']
+5 : 12
+['Sniper', 'River', 'Quid', 'Tomo', 'Eyla'] :(CORRECT): ['Castle', 'Armao', 'Mask', 'Tactical', 'Olleh']
+6 : 13
+['Bwipo', 'Inspired', 'Quad', 'Massu', 'Busio'] :(INCORRECT): ['Sniper', 'River', 'Quid', 'Meech', 'Eyla']
+6 : 14
+['Bwipo', 'Inspired', 'Quad', 'Massu', 'Busio'] :(INCORRECT): ['Sniper', 'River', 'Quid', 'Meech', 'Eyla']
+6 : 15
+['Bwipo', 'Inspired', 'Quad', 'Massu', 'Busio'] :(INCORRECT): ['Sniper', 'River', 'Quid', 'Meech', 'Eyla']
+6 : 16
+['Impact', 'UmTi', 'APA', 'Yeon', 'CoreJJ'] :(CORRECT): ['Castle', 'Armao', 'Mask', 'Tactical', 'Olleh']
+7 : 17
+['Impact', 'UmTi', 'APA', 'Yeon', 'CoreJJ'] :(CORRECT): ['Castle', 'Armao', 'Mask', 'Tactical', 'Olleh']
+8 : 18
+['FakeGod', 'Bugi', 'Insanity', 'Bvoy', 'Zeyzal'] :(INCORRECT): ['Licorice', 'Spica', 'Jensen', 'Zven', 'Isles']
+8 : 19
+['FakeGod', 'Bugi', 'Insanity', 'Bvoy', 'Zeyzal'] :(INCORRECT): ['Licorice', 'Spica', 'Jensen', 'Zven', 'Isles']
+8 : 20
+['Thanatos', 'Blaber', 'jojopyun', 'Berserker', 'Vulcan'] :(INCORRECT): ['Dhokla', 'Contractz', 'Palafox', 'FBI', 'Huhi']
+8 : 21
+['Thanatos', 'Blaber', 'jojopyun', 'Berserker', 'Vulcan'] :(CORRECT): ['Dhokla', 'Contractz', 'Palafox', 'FBI', 'Huhi']
+9 : 22
+['Thanatos', 'Blaber', 'jojopyun', 'Berserker', 'Vulcan'] :(CORRECT): ['Sniper', 'River', 'Quid', 'Meech', 'Eyla']
+10 : 23
+['Thanatos', 'Blaber', 'jojopyun', 'Berserker', 'Vulcan'] :(CORRECT): ['Sniper', 'River', 'Quid', 'Meech', 'Eyla']
+11 : 24
+['Bwipo', 'Inspired', 'Quad', 'Massu', 'Busio'] :(INCORRECT): ['Castle', 'Armao', 'Mask', 'Tactical', 'Olleh']
+11 : 25

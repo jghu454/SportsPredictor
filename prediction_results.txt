@@ -1,0 +1,64 @@
+['Bin', 'Wei', 'Knight', 'Elk', 'ON'] :(CORRECT): ['Ale', 'Croco', 'Shanks', 'Hope', 'Kael']
+1 : 1
+['Bin', 'Wei', 'Knight', 'Elk', 'ON'] :(INCORRECT): ['Ale', 'Croco', 'Shanks', 'Hope', 'Kael']
+1 : 2
+['Bin', 'Wei', 'Knight', 'Elk', 'ON'] :(INCORRECT): ['Ale', 'Croco', 'Shanks', 'Hope', 'Kael']
+1 : 3
+['shanji', 'Leyan', 'RooKie', 'Photic', 'Zhuo'] :(CORRECT): ['Burdol', 'Meteor', 'Haichao', 'Shaoye', 'jinjiao']
+2 : 4
+['shanji', 'Leyan', 'RooKie', 'Photic', 'Zhuo'] :(CORRECT): ['Burdol', 'Meteor', 'Haichao', 'Shaoye', 'jinjiao']
+3 : 5
+['shanji', 'Leyan', 'RooKie', 'Photic', 'Zhuo'] :(INCORRECT): ['Burdol', 'Meteor', 'Haichao', 'Shaoye', 'jinjiao']
+3 : 6
+['Hery', 'Tianzhen', 'Angel', 'Starry', 'Ppgod'] :(INCORRECT): ['Xiaoxu', 'Xiaohao', 'Vicla', 'Assum', 'Jwei']
+3 : 7
+['Hery', 'Tianzhen', 'Angel', 'Starry', 'Ppgod'] :(CORRECT): ['Xiaoxu', 'Xiaohao', 'Vicla', 'Assum', 'Jwei']
+4 : 8
+['Zdz', 'milkyway', 'Care', 'deokdam', 'Life'] :(CORRECT): ['Breathe', 'Tarzan', 'xiaohu', 'Light', 'Crisp']
+5 : 9
+['Zdz', 'milkyway', 'Care', 'deokdam', 'Life'] :(INCORRECT): ['Breathe', 'Tarzan', 'xiaohu', 'Light', 'Crisp']
+5 : 10
+['Ale', 'Croco', 'Shanks', 'Hope', 'Kael'] :(INCORRECT): ['Zika', 'WeiWei', 'Scout', 'GALA', 'Hang']
+5 : 11
+['Ale', 'Croco', 'Shanks', 'Hope', 'Kael'] :(INCORRECT): ['Zika', 'WeiWei', 'Scout', 'GALA', 'Hang']
+5 : 12
+['Ale', 'Croco', 'Shanks', 'Hope', 'Kael'] :(CORRECT): ['Zika', 'WeiWei', 'Scout', 'GALA', 'Hang']
+6 : 13
+['Zdz', 'milkyway', 'Care', 'deokdam', 'Life'] :(CORRECT): ['369', 'Tian', 'Creme', 'JackeyLove', 'meiko']
+7 : 14
+['Zdz', 'milkyway', 'Care', 'deokdam', 'Life'] :(CORRECT): ['369', 'Tian', 'Creme', 'JackeyLove', 'meiko']
+8 : 15
+['Solokill', 'Jiejie', 'Cryin', 'Leave', 'Wink'] :(CORRECT): ['Qingtian', 'H4cker', 'Yuekai', 'Doggo', 'Niket']
+9 : 16
+['Solokill', 'Jiejie', 'Cryin', 'Leave', 'Wink'] :(CORRECT): ['Qingtian', 'H4cker', 'Yuekai', 'Doggo', 'Niket']
+10 : 17
+['Burdol', 'Meteor', 'Haichao', 'Shaoye', 'jinjiao'] :(CORRECT): ['Zika', 'WeiWei', 'Scout', 'GALA', 'Hang']
+11 : 18
+['Burdol', 'Meteor', 'Haichao', 'Shaoye', 'jinjiao'] :(INCORRECT): ['Zika', 'WeiWei', 'Scout', 'GALA', 'Hang']
+11 : 19
+['Burdol', 'Meteor', 'Haichao', 'Shaoye', 'jinjiao'] :(CORRECT): ['Zika', 'WeiWei', 'Scout', 'GALA', 'Hang']
+12 : 20
+['Bin', 'Wei', 'Knight', 'Elk', 'ON'] :(INCORRECT): ['shanji', 'AKi', 'RooKie', 'Photic', 'Zhuo']
+12 : 21
+['Bin', 'Wei', 'Knight', 'Elk', 'ON'] :(CORRECT): ['shanji', 'AKi', 'RooKie', 'Photic', 'Zhuo']
+13 : 22
+['Bin', 'Wei', 'Knight', 'Elk', 'ON'] :(CORRECT): ['shanji', 'AKi', 'RooKie', 'Photic', 'Zhuo']
+14 : 23
+['Ale', 'Croco', 'Shanks', 'Hope', 'Kael'] :(CORRECT): ['369', 'Tian', 'Creme', 'JackeyLove', 'meiko']
+15 : 24
+['Ale', 'Croco', 'Shanks', 'Hope', 'Kael'] :(CORRECT): ['369', 'Tian', 'Creme', 'JackeyLove', 'meiko']
+16 : 25
+['Hery', 'Tianzhen', 'Angel', 'Starry', 'Ppgod'] :(INCORRECT): ['Hoya', 'Beichuan', 'Ucal', '1xn', 'Feather']
+16 : 26
+['Hery', 'Tianzhen', 'Angel', 'Starry', 'Ppgod'] :(INCORRECT): ['Hoya', 'Beichuan', 'Ucal', '1xn', 'Feather']
+16 : 27
+['Breathe', 'Tarzan', 'xiaohu', 'Light', 'Crisp'] :(CORRECT): ['Burdol', 'Meteor', 'Haichao', 'Shaoye', 'jinjiao']
+17 : 28
+['Breathe', 'Tarzan', 'xiaohu', 'Light', 'Crisp'] :(CORRECT): ['Burdol', 'Meteor', 'Haichao', 'Shaoye', 'jinjiao']
+18 : 29
+['Zika', 'WeiWei', 'Scout', 'GALA', 'Hang'] :(CORRECT): ['sheer', 'Kanavi', 'Yagao', 'Ruler', 'Missing']
+19 : 30
+['Zika', 'WeiWei', 'Scout', 'GALA', 'Hang'] :(INCORRECT): ['sheer', 'Kanavi', 'Yagao', 'Ruler', 'Missing']
+19 : 31
+['Zika', 'WeiWei', 'Scout', 'GALA', 'Hang'] :(CORRECT): ['sheer', 'Kanavi', 'Yagao', 'Ruler', 'Missing']
+20 : 32

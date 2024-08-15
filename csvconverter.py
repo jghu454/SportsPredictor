@@ -235,8 +235,8 @@ dictionary_games = {
 }
 
 
-#dictionary_games['S14'] = dictionary_games["S14"] + dsc.scrape_links_games()
-#dictionary_games['S13'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Summer%202023/')
+dictionary_games['S14'] = dictionary_games["S14"] + dsc.scrape_links_games()
+dictionary_games['S13'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Summer%202023/')
 dictionary_games['S12'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Summer%202022/')
 dictionary_games['S11'] = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCK%20Spring%202024/')
 

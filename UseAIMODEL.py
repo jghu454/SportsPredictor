@@ -80,6 +80,8 @@ myModel = Model(95)
 myModel.load_state_dict(torch.load('model_weights.pth'))
 myModel.eval()
 
+
+
 #have to grab my data for a game
 
 players = sqlite3.connect('PlayerStats.db')
@@ -110,12 +112,8 @@ def setup(Team1_Players,Team2_Players,Team1_Champs,Team2_Champs, season):
     for i in range(0,len(Team1_Players)):
         lane = lane_format[i]
         for value in player_format[lane]:
-            t1 = ld.retrieve_player(player_cursor,season,Team1_Players[i])
-            t2 = ld.retrieve_player(player_cursor,season,Team2_Players[i])
-            if len(t1) == 0 or len(t2) == 0:
-                return False
-            team1_person = t1[0][value]
-            team2_person = t2[0][value]
+            team1_person = ld.retrieve_player(player_cursor,season,Team1_Players[i])[0][value]
+            team2_person = ld.retrieve_player(player_cursor,season,Team2_Players[i])[0][value]
 
             if '%' in team1_person:
                 team1_person = team1_person[:-1]
@@ -137,12 +135,8 @@ def setup(Team1_Players,Team2_Players,Team1_Champs,Team2_Champs, season):
     
 
     for i in range(0,len(Team1_Champs)):
-        #print(Team1_Champs[i])
-        #print(Team2_Champs[i])
-
-        if (Team1_Champs[i] == "Aurora" or Team2_Champs[i] == "Aurora"):
-            return False
-
+        print(Team1_Champs[i])
+        print(Team2_Champs[i])
         team1_champ_stat = ld.retrieve_champ(champs_cursor,season,Team1_Champs[i])[0]
         team2_champ_stat = ld.retrieve_champ(champs_cursor,season,Team2_Champs[i])[0]
         #The important stats are kda, csPerMin,damagePerMin,goldPerMin,CsDiffAt15,xpDiffat15,GoldDiffAt15
@@ -185,94 +179,47 @@ def setup(Team1_Players,Team2_Players,Team1_Champs,Team2_Champs, season):
 
     #print(len(entry))
     assert(len(entry) == 95)
-    #print("Valid Entry: ", len(entry))
+    print("Valid Entry: ", len(entry))
     return entry
 
 
-tourney = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LCS%20Summer%202024/')
+tourney = dsc.scrape_links_games('https://gol.gg/tournament/tournament-matchlist/LPL%20Summer%20Season%202024/')
 
 
 
 
 
-
+'''
 """# Assuming 'model' is your neural network instance
 for name, param in myModel.named_parameters():
     if param.requires_grad:
         print(name, param.data)"""
 
-guesses = 0
-total = 0
-# Open a file to write the results
-with open("prediction_results2.txt", "w") as file:
+team2 = ['Zdz','milkyway','Care','deokdam','Life']
+team1 = ['Ale','Croco','Shanks','Hope','Kael']
+team2_picks = ['KSante','Lillia','Corki','Caitlyn','Braum']
+team1_picks = ['Renekton','Nidalee','Tristana','Jhin','Alistar']
+
+
+
+data_values = setup(team1,team2,team1_picks,team2_picks,'S14')
+print("Length", ":", len(data_values))
+print(data_values)
+
+dataTensor = torch.tensor(data_values,dtype = torch.float32)
+dataTensor = dataTensor.unsqueeze(0)
+
+# Make prediction
+with torch.no_grad():  # Disable gradient computation for inference
+    prediction = myModel(dataTensor)
+    print(prediction)
     
-    for series in tourney[2:]:
-        print(series)
-        champ_picks, result = dsc.scrape_picks2(series)
-        players = dsc.scrape_teams_game(series)
+    probabilities = F.softmax(prediction, dim=1)
+    print(probabilities)
+    prob = probabilities.numpy()[0]
+    print(prob)
+'''
 
-        team1 = players[0]
-        team2 = players[1]
 
-        if len(team1) > 5 or len(team2) > 5:
-            continue
-
-        for x in champ_picks:
-            team1_picks = champ_picks[x][0]
-            team2_picks = champ_picks[x][1]
-
-            outcome = result[x]
-
-            data_values = setup(team1, team2, team1_picks, team2_picks, 'S14')
-            if data_values == False:
-                break
-            if not data_values:
-                # Skip if data setup fails
-                break
-
-            dataTensor = torch.tensor(data_values, dtype=torch.float32)
-            dataTensor = dataTensor.unsqueeze(0)
-            total += 1
-
-            # Make prediction
-            with torch.no_grad():  # Disable gradient computation for inference
-                prediction = myModel(dataTensor)
-                probabilities = F.softmax(prediction, dim=1)
-                prob = probabilities.numpy()[0]
-
-                if prob[0] > prob[1] and outcome[0] == 'WIN':
-                    result_str = f"{team1} :(CORRECT): {team2}\n"
-                    print(result_str, "and: ", team1, " won")
-                    print("Here are the comps: ")
-                    print(team1, ":", team2)
-                    print(team1_picks, ":", team2_picks)
-                    print(prob)
-                    print(probabilities)
-                    guesses += 1
-                elif prob[0] < prob[1] and outcome[1] == 'WIN':
-                    result_str = f"{team1} :(CORRECT): {team2}\n"
-                    guesses += 1
-                    print(result_str, "and: ", team2, " won")
-                    print("Here are the comps: ")
-                    print(team1, ":", team2)
-                    print(team1_picks, ":", team2_picks)
-                    print(prob)
-                    print(probabilities)
-                else:
-                    result_str = f"{team1} :(INCORRECT): {team2}\n"
-
-                file.write(result_str)
-                print(result_str.strip())
-                print("-----------------------------------")
-                
-            # Print progress
-            progress_str = f"{guesses} : {total}\n"
-            file.write(progress_str)
-            print(progress_str.strip())
-            print(guesses, ":", total)
-
-    # Final results
-    file.write(f"TOTAL: {total}\n")
-    file.write(f"GUESSES: {guesses}\n")
-    print(f"TOTAL: {total}")
-    print(f"GUESSES: {guesses}")
+for name, param in myModel.named_parameters():
+    print(name, ":", param)

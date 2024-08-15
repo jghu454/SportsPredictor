@@ -479,11 +479,12 @@ def scrape_links_games(tournament_link = 'https://gol.gg/tournament/tournament-m
     return links
 
 def scrape_champ_comfort(player,season,champ, istop):
-    
+    #print("Before Get Link")
     driver.get(f'https://gol.gg/players/list/season-{season}/split-Summer/tournament-ALL/')
     time.sleep(0.5)
 
-    
+    #print("After Get Link")
+
     if istop[0] == False:
         istop[0] = True
         leagues = driver.find_element(By.XPATH, '/html/body/div/main/div/div/div[1]/div/form/div[3]/div[2]/table/tbody/tr/td[2]/span/div/div[1]/input')
@@ -499,18 +500,23 @@ def scrape_champ_comfort(player,season,champ, istop):
         #print("BUTTON:",driver.find_element(By.XPATH,'/html/body/div/main/div/div/div[1]/div/form/div[3]/div[2]/table/tbody/tr/td[2]/div[4]/button').text)
         driver.find_element(By.XPATH,'/html/body/div/main/div/div/div[1]/div/form/div[3]/div[2]/table/tbody/tr/td[2]/div[4]/button').click()
     
+    #print("After Get Top Leageus potentially")
 
-
-
+    #print("Finding player")
+    print(player, ":", champ)
     player = driver.find_element(By.XPATH,f'//*[@title = "{player} stats"]')
     player.click()
+
+   # print("Found Player")
+
     #opened the player's profile now time to type in the champion to look up their stats
     time.sleep(0.5)
+    #print("Finding stats")
     all_link = driver.find_elements(By.XPATH,'//*[@class = "mr-2"]')[0]
     driver.get(all_link.find_element(By.TAG_NAME,'a').get_attribute("href"))
     time.sleep(0.1)
     champ_search = driver.find_element(By.XPATH,'//*[@id="champion"]')
-    
+    #print("Found Stats")
     #we want to first see if the player has ever played the champion at all, if not we return an empty array
     look_for_champ = [x.text for x in champ_search.find_elements(By.TAG_NAME, 'option')[1:]]
 

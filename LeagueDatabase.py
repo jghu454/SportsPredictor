@@ -68,11 +68,15 @@ def insert_entry(cursor, table_name, entry):
     
     
 def retrieve_champ(cursor,table_name, champion):
+    print("Retrieve Champ: ", champion)
     cursor.execute(f'SELECT * FROM {table_name} WHERE CHAMPION = "{champion}"')
 
     return cursor.fetchall()
 
 def retrieve_player(cursor, table_name, player):
+    print("Retrieve Player: ", player)
     cursor.execute(f'SELECT * FROM {table_name} WHERE PLAYER = "{player}"')
+    
+    
 
     return cursor.fetchall()
