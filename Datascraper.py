@@ -67,7 +67,7 @@ def login():
 
     #input password
     input = driver.find_element(By.XPATH, "/html/body/div/main/div/div[2]/form/div[2]/div/input")
-    input.send_keys("jewlover123")
+    input.send_keys("12521512")
     #print(input)
 
     #press login
